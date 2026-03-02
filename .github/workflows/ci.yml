@@ -78,11 +78,3 @@ jobs:
           name: execution-report-${{ matrix.module }}
           path: reports/
           retention-days: 5
-    needs:
-    with:
-    permissions:
-    name:
-    uses:
-    if:
-    secrets:
-    concurrency:
