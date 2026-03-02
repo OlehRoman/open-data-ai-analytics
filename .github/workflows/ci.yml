@@ -2,9 +2,9 @@ name: Project CI (Full Pipeline)
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "main", "master" ]
   pull_request:
-    branches: [ "main" ]
+    branches: [ "main", "master" ]
   workflow_dispatch:
     inputs:
       module:
@@ -12,11 +12,16 @@ on:
         required: true
         default: "all"
         type: choice
-        options: [all, data_load, data_quality, research]
+        options:
+          - all
+          - data_load
+          - data_quality
+          - research
 
 jobs:
   run-modules:
     runs-on: ubuntu-latest
+
     strategy:
       fail-fast: false
       matrix:
@@ -33,13 +38,14 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Set up Python
+        # Цей крок можна залишити для всіх, він швидкий завдяки кешуванню
         uses: actions/setup-python@v5
         with:
           python-version: "3.11"
           cache: "pip"
 
       - name: Install dependencies
-        # Додаємо перевірку сюди, щоб не ставити бібліотеки дарма
+        # Додаємо умову сюди
         if: |
           github.event_name != 'workflow_dispatch' || 
           github.event.inputs.module == 'all' || 
@@ -49,23 +55,24 @@ jobs:
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
 
       - name: Execute Module
-        # Головна перевірка: виконувати скрипт тільки якщо модуль збігається з вибором
+        # Основна логіка запуску конкретного скрипта
         if: |
           github.event_name != 'workflow_dispatch' || 
           github.event.inputs.module == 'all' || 
           github.event.inputs.module == matrix.module
         run: |
           mkdir -p reports/
+          echo "Running ${{ matrix.module }}..."
           python ${{ matrix.path }} > reports/${{ matrix.module }}_run.log 2>&1
 
       - name: Upload Artifacts
-        # Зберігаємо артефакти тільки якщо крок виконання не був пропущений
+        # Зберігаємо результат тільки якщо крок Execute Module не було пропущено
         if: |
           (github.event_name != 'workflow_dispatch' || 
           github.event.inputs.module == 'all' || 
           github.event.inputs.module == matrix.module) && always()
+        uses: actions/upload-artifact@v4
         with:
           name: execution-report-${{ matrix.module }}
           path: reports/
           retention-days: 5
-        uses: actions/upload-artifact@v4
