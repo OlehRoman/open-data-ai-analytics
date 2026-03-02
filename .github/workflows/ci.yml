@@ -55,14 +55,16 @@ jobs:
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
 
       - name: Execute Module
-        # Основна логіка запуску конкретного скрипта
         if: |
           github.event_name != 'workflow_dispatch' || 
           github.event.inputs.module == 'all' || 
           github.event.inputs.module == matrix.module
+        env:
+            # Передаємо секрети в середовище виконання
+          KAGGLE_USERNAME: ${{ secrets.KAGGLE_USERNAME }}
+          KAGGLE_KEY: ${{ secrets.KAGGLE_KEY }}
         run: |
           mkdir -p reports/
-          echo "Running ${{ matrix.module }}..."
           python ${{ matrix.path }} > reports/${{ matrix.module }}_run.log 2>&1
 
       - name: Upload Artifacts
@@ -76,3 +78,11 @@ jobs:
           name: execution-report-${{ matrix.module }}
           path: reports/
           retention-days: 5
+    needs:
+    with:
+    permissions:
+    name:
+    uses:
+    if:
+    secrets:
+    concurrency:
