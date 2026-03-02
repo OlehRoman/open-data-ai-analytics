@@ -1,0 +1,31 @@
+name: Local Machine CI (Self-hosted)
+
+on:
+  # Запускаємо вручну, щоб не навантажувати твій ПК при кожному пуші
+  workflow_dispatch:
+
+jobs:
+  local-test:
+    # ОСЬ ТУТ ми вказуємо твій раннер
+    runs-on: [self-hosted, Windows, X64]
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Run module locally
+        run: |
+          # Створюємо папку для звітів, якщо її немає
+          if (!(Test-Path reports)) { New-Item -ItemType Directory -Path reports }
+          
+          echo "Запуск аналізу на локальному ПК..."
+          # Запускаємо твій скрипт (використовуємо шлях з твоєї структури)
+          python src/data_quality.py > reports/local_run.log 2>&1
+          
+          echo "Локальна перевірка завершена успішно."
+
+      - name: Upload Local Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: local-pc-report
+          path: reports/

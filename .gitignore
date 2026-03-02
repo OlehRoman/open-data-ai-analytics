@@ -1,7 +1,28 @@
+# Python
 __pycache__/
-.ipynb_checkpoints/
+*.py[cod]
+*$py.class
 .venv/
-.env
-.idea/
 
+# IDE (PyCharm / VS Code)
+.idea/
+.vscode/
+
+# Jupyter Notebooks
+.ipynb_checkpoints/
+
+# Secrets & Environment
+.env
+
+# GitHub Self-hosted Runner (КРИТИЧНО)
+actions-runner/
+_work/
+
+# Data & Reports
 data/raw/
+reports/
+*.log
+
+# System files
+.DS_Store
+Thumbs.db
