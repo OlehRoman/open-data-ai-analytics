@@ -27,7 +27,7 @@ jobs:
       matrix:
         include:
           - module: data_load
-            path: data/load_data.py
+            path: data/data_load.py
           - module: data_quality
             path: src/data_quality.py
           - module: research
