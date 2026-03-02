@@ -8,10 +8,7 @@ try:
     RAW_DIR.mkdir(parents=True, exist_ok=True)
 
     print("Починаю завантаження датасету...")
-    path = kagglehub.dataset_download(
-        "elemento/nyc-yellow-taxi-trip-data",
-        path=str(RAW_DIR)
-    )
+    path = kagglehub.dataset_download("elemento/nyc-yellow-taxi-trip-data")
     print("Downloaded to:", path)
 
 except Exception as e:
