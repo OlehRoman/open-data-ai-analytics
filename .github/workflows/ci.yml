@@ -38,14 +38,13 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Set up Python
-        # Цей крок можна залишити для всіх, він швидкий завдяки кешуванню
+
         uses: actions/setup-python@v5
         with:
           python-version: "3.11"
           cache: "pip"
 
       - name: Install dependencies
-        # Додаємо умову сюди
         if: |
           github.event_name != 'workflow_dispatch' || 
           github.event.inputs.module == 'all' || 
@@ -60,7 +59,6 @@ jobs:
           github.event.inputs.module == 'all' || 
           github.event.inputs.module == matrix.module
         env:
-            # Передаємо секрети в середовище виконання
           KAGGLE_USERNAME: ${{ secrets.KAGGLE_USERNAME }}
           KAGGLE_KEY: ${{ secrets.KAGGLE_KEY }}
         run: |
@@ -68,7 +66,6 @@ jobs:
           python ${{ matrix.path }} > reports/${{ matrix.module }}_run.log 2>&1
 
       - name: Upload Artifacts
-        # Зберігаємо результат тільки якщо крок Execute Module не було пропущено
         if: |
           (github.event_name != 'workflow_dispatch' || 
           github.event.inputs.module == 'all' || 
