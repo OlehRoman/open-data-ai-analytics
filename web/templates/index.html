@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Аналітичний Дашборд | Docker Project</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body { background-color: #f4f7f6; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        .hero-section { background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%); color: white; padding: 60px 0; margin-bottom: 40px; border-radius: 0 0 50px 50px; }
+        .card { border: none; border-radius: 15px; transition: transform 0.3s; box-shadow: 0 10px 20px rgba(0,0,0,0.05); }
+        .card:hover { transform: translateY(-5px); }
+        .status-badge { font-size: 0.9rem; padding: 5px 15px; border-radius: 20px; }
+        .plot-img { width: 100%; border-radius: 10px; border: 1px solid #eee; }
+    </style>
+</head>
+<body>
+
+<div class="hero-section text-center">
+    <div class="container">
+        <h1 class="display-4 fw-bold">Система аналітики Video Game Sales</h1>
+        <p class="lead">Автоматизований пайплайн обробки даних у мікросервісній архітектурі Docker</p>
+        <span class="badge bg-success status-badge">Всі модулі успішно виконані</span>
+    </div>
+</div>
+
+<div class="container">
+    <div class="row">
+        <div class="col-12 mb-4">
+            <div class="card p-4">
+                <h3>Про проєкт</h3>
+                <p>Цей застосунок демонструє повний цикл роботи з даними: від завантаження сирого CSV у базу даних <strong>PostgreSQL</strong> до автоматичної перевірки якості, статистичного аналізу та генерації графіків. Кожен етап ізольований у власному Docker-контейнері.</p>
+            </div>
+        </div>
+
+        <div class="col-md-6 mb-4">
+            <div class="card h-100 p-4">
+                <h4 class="text-primary">🛡️ Аналіз якості</h4>
+                <hr>
+                {% if quality %}
+                    <p><strong>Загальна кількість записів:</strong> {{ quality.total_rows }}</p>
+                    <p><strong>Виявлено дублікатів:</strong> <span class="badge bg-danger">{{ quality.duplicates_count }}</span></p>
+                    <h5>Пропуски в даних:</h5>
+                    <ul class="list-group list-group-flush">
+                        {% for col, count in quality.missing_values.items() %}
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                {{ col }}
+                                <span class="badge {{ 'bg-warning text-dark' if count > 0 else 'bg-light text-muted' }} rounded-pill">{{ count }}</span>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <div class="alert alert-info">Дані про якість ще завантажуються...</div>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="col-md-6 mb-4">
+            <div class="card h-100 p-4">
+                <h4 class="text-success">📊 Статистичне дослідження</h4>
+                <hr>
+                {% if research %}
+                    <p>Опрацьовано числових колонок: <strong>{{ research.numeric_columns_analyzed | length }}</strong></p>
+                    <div class="table-responsive">
+                        <table class="table table-hover table-sm mt-2">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Метрика</th>
+                                    {% for col in research.numeric_columns_analyzed[:3] %} <th>{{ col }}</th> {% endfor %}
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for stat in ['mean', 'min', 'max'] %}
+                                <tr>
+                                    <td><strong>{{ stat }}</strong></td>
+                                    {% for col in research.numeric_columns_analyzed[:3] %}
+                                        <td>{{ research.statistics[col][stat] | round(2) if research.statistics[col] else '-' }}</td>
+                                    {% endfor %}
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <div class="alert alert-info">Статистика готується...</div>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="col-12 mb-5">
+            <div class="card p-4">
+                <h4 class="text-dark mb-4">📈 Візуалізація даних</h4>
+                <div class="row">
+                    {% if plots %}
+                        {% for plot in plots %}
+                            <div class="col-lg-6 mb-3">
+                                <div class="p-2 border rounded bg-light">
+                                    <h6 class="text-center text-muted">{{ plot }}</h6>
+                                    <img src="/static/plots/{{ plot }}" class="plot-img" alt="Графік аналітики">
+                                </div>
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="col-12 text-center py-5">
+                            <p class="text-muted italic">Графіки ще не згенеровані модулем visualization.</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<footer class="text-center pb-5 text-muted">
+    <small>© 2026 Лабораторна робота з Контейнеризації</small>
+</footer>
+
+</body>
+</html>

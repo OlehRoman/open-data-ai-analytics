@@ -1,0 +1,66 @@
+services:
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: project_db
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U user -d project_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  data_load:
+    build: ./data_load
+    volumes:
+      - ./dataset:/app/dataset
+    environment:
+      DATABASE_URL: postgresql://user:password@db:5432/project_db
+    depends_on:
+      db:
+        condition: service_healthy
+
+  data_quality:
+    build: ./data_quality_analysis
+    volumes:
+      - reports_data:/app/reports
+    environment:
+      DATABASE_URL: postgresql://user:password@db:5432/project_db
+    depends_on:
+      data_load:
+        condition: service_completed_successfully
+
+  data_research:
+    build: ./data_research
+    volumes:
+      - reports_data:/app/reports
+    environment:
+      DATABASE_URL: postgresql://user:password@db:5432/project_db
+    depends_on:
+      data_load:
+        condition: service_completed_successfully
+
+  visualization:
+    build: ./visualization
+    volumes:
+      - plots_data:/app/static/plots
+    environment:
+      DATABASE_URL: postgresql://user:password@db:5432/project_db
+    depends_on:
+      data_load:
+        condition: service_completed_successfully
+
+  web:
+    build: ./web
+    ports:
+      - "5000:5000"
+    volumes:
+      - reports_data:/app/reports:ro
+      - plots_data:/app/static/plots:ro
+    depends_on:
+      - db
+
+volumes:
+  reports_data:
+  plots_data:
