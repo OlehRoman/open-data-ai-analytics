@@ -10,6 +10,7 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
+    restart: unless-stopped
 
   data_load:
     build: ./data_load
@@ -59,7 +60,9 @@ services:
       - reports_data:/app/reports:ro
       - plots_data:/app/static/plots:ro
     depends_on:
-      - db
+      db:
+        condition: service_healthy
+    restart: unless-stopped
 
 volumes:
   reports_data:

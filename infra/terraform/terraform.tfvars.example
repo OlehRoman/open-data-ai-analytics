@@ -1,0 +1,4 @@
+admin_ssh_public_key = "ssh-ed25519 AAAA... your_key_here"
+repo_url             = "https://github.com/OlehRoman/open-data-ai-analytics.git"
+compose_subdir       = "."
+app_port             = 5000
