@@ -14,9 +14,3 @@ scrape_configs:
   - job_name: "cadvisor"
     static_configs:
       - targets: ["cadvisor:8080"]
-
-  # Optional: app metrics if your web service exposes /metrics on port 5000
-  - job_name: "web"
-    metrics_path: /metrics
-    static_configs:
-      - targets: ["host.docker.internal:5000"]
