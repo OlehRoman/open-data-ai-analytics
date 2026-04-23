@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: web-app
-          image: ghcr.io/OlehRoman/open-data-ai-analytics-web:latest
+          image: ghcr.io/olehroman/open-data-ai-analytics-web:latest
           imagePullPolicy: Always
           ports:
             - containerPort: 5000
