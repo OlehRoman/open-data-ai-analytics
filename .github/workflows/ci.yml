@@ -27,18 +27,17 @@ jobs:
       matrix:
         include:
           - module: data_load
-            path: data/data_load.py
+            path: data_load/app.py
           - module: data_quality
-            path: src/data_quality.py
+            path: data_quality_analysis/app.py
           - module: research
-            path: src/research.py
+            path: data_research/app.py
 
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
 
       - name: Set up Python
-
         uses: actions/setup-python@v5
         with:
           python-version: "3.11"
@@ -62,14 +61,11 @@ jobs:
           KAGGLE_USERNAME: ${{ secrets.KAGGLE_USERNAME }}
           KAGGLE_KEY: ${{ secrets.KAGGLE_KEY }}
         run: |
-          mkdir -p reports/
+          mkdir -p reports
           python ${{ matrix.path }} > reports/${{ matrix.module }}_run.log 2>&1
 
       - name: Upload Artifacts
-        if: |
-          (github.event_name != 'workflow_dispatch' || 
-          github.event.inputs.module == 'all' || 
-          github.event.inputs.module == matrix.module) && always()
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: execution-report-${{ matrix.module }}
