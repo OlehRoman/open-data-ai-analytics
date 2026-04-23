@@ -1,4 +1,6 @@
-admin_ssh_public_key = "ssh-ed25519 AAAA... your_key_here"
+admin_ssh_public_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQCymsdBB80QXPAsdr5RyUvPP7I/eEHEylXAP8g3/MqQt64sG4YLhGTnW1Qjo72E7qGrPrS0dP4nbVaYhPRdItwCfd5W9LG6M4+HOmCyc4a7vSNye3PmVfgdCeC2rAopNifWLI7GzEButVd6g6eWvO4yvHnRgmFMNSWeF4XErkwTNIoEioJo4vKF8PDZyp3vPw52e9Ub2LRG/+waFEN1gS9tc6NcAHEw9x5hv3/XpyB3ar0PY68iNDKVPklhAp6iNA6/SYrfn6xFa1nn72z5EyJqBacdIcxIeilpw5PafKz5GO8lzVs3NejmOz+cFCxGqzuEG/8AvyXmLSg0fq6C6rKLoYXmruI+bz4HostcfOOOGorUmKJWQ6QHDdIjXI91iOs20iSJZG+LaKMmPrxnhGEvgr/+SVYcYL31hUIMm9PXn7ZJBdsKTCjDtd2UxLw4/0G2xY7I5PbKrfyoJr4jI4XUUn0r+rUrIYZ/LmuR0hQwqNvLAwcH5rXIh1/eAz4gFk7LE1HtQvS0PPC12TXkkVWEuYGGnC4aj4Hyno2uQR2cVSvq05WvN71g8f2P8KUiHweLBMxSXeVSyNvzj0eiJzZZqEKhfn6AU1s0J4ml5zWLSL4A+DxfwyX5zERPuhMCGw+wA5ZH7pPs0lutsIXas6lDqkRLMJF8i+VBUULrGWeuDw== azureuser@SandboxHost-639124732600805873"
 repo_url             = "https://github.com/OlehRoman/open-data-ai-analytics.git"
 compose_subdir       = "."
 app_port             = 5000
+
+
