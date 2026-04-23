@@ -9,8 +9,11 @@ def run_quality_check():
     db_url = os.getenv("DATABASE_URL", "postgresql://user:password@db:5432/project_db")
     engine = create_engine(db_url)
 
-    report_path = "/app/reports/quality_report.json"
-    os.makedirs("/app/reports", exist_ok=True)
+    # 👉 Універсальний шлях
+    reports_dir = os.getenv("REPORTS_DIR", "reports")
+    os.makedirs(reports_dir, exist_ok=True)
+
+    report_path = os.path.join(reports_dir, "quality_report.json")
 
     print("--- Модуль data_quality_analysis стартував ---")
 
